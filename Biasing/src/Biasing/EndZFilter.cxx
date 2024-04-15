@@ -67,12 +67,66 @@ EndZFilter::~EndZFilter() {}
   }
 }*/
 
-double prezpos=0;
+//double prezpos=0;
 void EndZFilter::stepping(const G4Step* step) {
   // Get the track associated with this step.
   auto track{step->GetTrack()};
+  if (auto region{
+          track->GetVolume()->GetLogicalVolume()->GetRegion()->GetName()};
+      region.compareTo("ECAL2") != 0)
+    return;
+
+  if (auto volume{track->GetNextVolume()->GetName()};
+      volume.compareTo("recoil_PV") == 0
+      or volume.compareTo("World_PV") == 0) {
+    // If the recoil electron
+    if (track->GetMomentum().mag() >= recoilMaxPThreshold_) {
+      track->SetTrackStatus(fKillTrackAndSecondaries);
+      G4RunManager::GetRunManager()->AbortEvent();
+      return;
+    }
+
+    // Get the electron secondries
+    bool hasBremCandidate = false;
+    if (auto secondaries = step->GetSecondary(); secondaries->size() == 0) {
+      track->SetTrackStatus(fKillTrackAndSecondaries);
+      G4RunManager::GetRunManager()->AbortEvent();
+      return;
+    } else {
+      for (auto& secondary_track : *secondaries) {
+        G4String processName =
+            secondary_track->GetCreatorProcess()->GetProcessName();
+
+        if (processName.compareTo("eBrem") == 0 &&
+            secondary_track->GetKineticEnergy() > bremEnergyThreshold_) {
+          auto trackInfo{simcore::UserTrackInformation::get(secondary_track)};
+          trackInfo->tagBremCandidate();
+
+          getEventInfo()->incBremCandidateCount();
+
+          hasBremCandidate = true;
+        }
+      }
+    }
+
+    if (!hasBremCandidate) {
+      track->SetTrackStatus(fKillTrackAndSecondaries);
+      G4RunManager::GetRunManager()->AbortEvent();
+      return;
+    }
+
+    if (killRecoil_)
+      track->SetTrackStatus(fStopAndKill);
+    else
+      track->SetTrackStatus(fSuspend);
+
+  } else if (step->GetPostStepPoint()->GetKineticEnergy() == 0) {
+    track->SetTrackStatus(fKillTrackAndSecondaries);
+    G4RunManager::GetRunManager()->AbortEvent();
+    return;
+  }
   //track->GetStep()
-  if(step->IsFirstStepInVolume()){
+  /*if(step->IsFirstStepInVolume()){
     prezpos = step->GetPreStepPoint()->GetPosition().z();
   }
   std::cout << "getPos:" << track->GetPosition().z() << std::endl;
@@ -89,7 +143,7 @@ void EndZFilter::stepping(const G4Step* step) {
     return;
   } else {
     std::cout << "Not Eliminated" << std::endl;
-  }
+  }*/
 }
 
 void EndZFilter::EndOfEventAction(const G4Event* event) {
