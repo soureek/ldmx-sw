@@ -73,7 +73,7 @@ void EndZFilter::stepping(const G4Step* step) {
   auto track{step->GetTrack()};
   if (auto region{
           track->GetVolume()->GetLogicalVolume()->GetRegion()->GetName()};
-      region.compareTo("ECAL2") != 0)
+      region.compareTo("em_calorimeters_back") != 0)
     return;
 
   if (auto volume{track->GetNextVolume()->GetName()};

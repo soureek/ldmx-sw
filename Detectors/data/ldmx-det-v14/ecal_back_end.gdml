@@ -366,7 +366,7 @@
       <section zOrder="1" zPosition="3.175" />
     </xtru>
     -->
-    <loop for="bilayer" from="1" to="num_bilayers-1" step="1">
+    <loop for="bilayer" from="4" to="num_bilayers-1" step="1">
       <box name="strongback_bar[bilayer]" lunit="mm"
            x="strongback_bar_dx" y="strongback_bar_dy" z="bilayer_strongback_thickness[bilayer]" />
     </loop>
@@ -385,7 +385,7 @@
 
       The octagons are oriented so that the middle of a flat side is bisected by the x and y axes.
     -->
-    <loop for="bilayer" from="1" to="num_bilayers-1" step="1">
+    <loop for="bilayer" from="4" to="num_bilayers-1" step="1">
       <xtru name="W_front_absorber[bilayer]" lunit="mm">
         <twoDimVertex x="absorber_polygon[1,1]" y="absorber_polygon[1,2]"/>
         <twoDimVertex x="absorber_polygon[2,1]" y="absorber_polygon[2,2]"/>
@@ -545,7 +545,7 @@
     </volume>
 
     <!-- define the tungsten absorber volume corresponding to the correct-thickness solid -->
-    <loop for="bilayer" from="1" to="num_bilayers-1" step="1">
+    <loop for="bilayer" from="4" to="num_bilayers-1" step="1">
       <volume name="strongback_bar_volume[bilayer]">
         <materialref ref="G4_Al0x2705780" />
         <solidref ref="strongback_bar[bilayer]" />
@@ -817,7 +817,7 @@
         specified by 'to' and the PreShower bilayer above is what uses the bilayer
         number 0.
       -->
-      <loop for="bilayer" from="1" to="num_bilayers-1" step="1">
+      <loop for="bilayer" from="4" to="num_bilayers-1" step="1">
         <physvol>
           <volumeref ref="W_front_volume[bilayer]"/>
           <position name="W_front_volume[bilayer]" unit="mm" x="0" y="-support_box_shift" 
@@ -1168,7 +1168,7 @@
   </structure>
 
   <setup name="Default" version="1.0">
-    <world ref="em_calorimeters"/>
+    <world ref="em_calorimeters_back"/>
   </setup>
 
   <userinfo>
