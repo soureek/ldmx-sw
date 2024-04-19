@@ -85,13 +85,18 @@
         <rotationref ref="identity"/>
       </physvol>
       <physvol copynumber="6"> 
-        <file name="ecal.gdml"/> 
+        <file name="ecal_front_3.gdml"/> 
         <positionref ref="em_calorimeter_pos"/> 
         <rotationref ref="identity"/> 
 	    </physvol>
       <physvol copynumber="7"> 
         <file name="hcal.gdml"/> 
         <positionref ref="hadron_calorimeter_pos"/> 
+        <rotationref ref="identity"/> 
+      </physvol>
+      <physvol copynumber="8"> 
+        <file name="ecal_back_end.gdml"/> 
+        <positionref ref="em_calorimeter_pos"/> 
         <rotationref ref="identity"/> 
       </physvol>
       <physvol>
