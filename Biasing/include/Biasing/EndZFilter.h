@@ -52,7 +52,14 @@ class EndZFilter : public simcore::UserAction {
  private:
 
   double endZ_{300};
+  /// Recoil electron threshold.
+  double recoilMaxPThreshold_{1500};  // MeV
 
+  /// Brem gamma energy treshold
+  double bremEnergyThreshold_{2500};
+
+  /// Flag indicating if the recoil electron track should be killed
+  bool killRecoil_{false};
 };  // EndZFilter
 }  // namespace biasing
 
